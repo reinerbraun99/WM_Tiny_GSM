@@ -710,7 +710,7 @@ void setup() {
 
   // OTA Drive begin
   SPIFFS.begin(true);
-  OTADRIVE.setInfo("1583b8f7-1702-45dd-8151-68e5b07de8d6", "v@1.0.6");
+  OTADRIVE.setInfo("1583b8f7-1702-45dd-8151-68e5b07de8d6", "v@1.0.7");
   OTADRIVE.onUpdateFirmwareProgress(update_prgs);
 
   Serial.printf("Download a new firmware from SIM800, V=%s\n", OTADRIVE.Version.c_str());
@@ -755,19 +755,19 @@ void loop() {
         // No response received, handle this case
         u8response++;
         Serial.println("No response from Modbus device");
-        if (String(au16data[0]) == "0" && u8response != 5){
+        if (String(au16data[0]) == "0" && u8response <= 5){
           // Back to Case 1 and Query still 0
           Serial.println("au16data[0] no data, back to u8state 1 and u8query 0");
           u8state = 1;
           u8query = 0;
         }
-        else if (String(au16data[2]) == "0" && u8response != 5){
+        else if (String(au16data[2]) == "0" && u8response <= 10){
           // Back to Case 1 and Query still 1
           Serial.println("au16data[2] no data, back to u8state 1 and u8query 1");
           u8state = 1;
           u8query = 1;
         }
-        else if(String(au16data[2]) == "0" && u8response == 5){
+        else if(String(au16data[2]) == "0" && u8response == 15){
           Serial.println("No response from Modbus device for long time, going deep sleep...");
           checkNetwork();
           // Set this to 0 for real situation
